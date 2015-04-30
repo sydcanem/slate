@@ -47,11 +47,16 @@
 
 <p>Welcome to Wavecell Multichannel Communication System JavaScript SDK. The JavaScript Library will enable you to add voice, video and chat functionality to your webpages.</p>
 
-<h2 id="about-the-documentation">About the documentation</h2>
+<h2 id="installation">Installation</h2>
 
-<p>All method description will have examples on the right side.</p>
+<blockquote>
+<p>JavaScript URL</p>
+</blockquote>
+<pre><code class="highlight plaintext">http://customer.api.wavecell.com/dist/&lt;version&gt;/engine.js
+</code></pre>
 
-<p>Parameters passed to the methods are samples only. You are provided a detailed description of the parameters in each method block.</p>
+<p>Add a script tag in your page with <code class="prettyprint">src</code> pointing to the script url. Replace <code class="prettyprint">&lt;version&gt;</code>
+with the current version of the library.</p>
 
 <h1 id="authorization">Authorization</h1>
 
@@ -74,6 +79,10 @@
 <li>Authorization Code</li>
 </ul>
 
+<p>You can find an example authentication server <a href="https://github.com/wavecellsg/sample-authentication-server">here</a>.</p>
+
+<aside class="warning">You should never expose your client secret publicly.</aside>
+
 <h1 id="wmcsengine">WMCSEngine</h1>
 <pre><code class="highlight javascript"><span class="kd">var</span> <span class="nx">options</span> <span class="o">=</span> <span class="p">{</span>
   <span class="s1">'access_token'</span> <span class="p">:</span> <span class="s1">'your_access_token'</span><span class="p">,</span>
@@ -84,7 +93,7 @@
 <span class="kd">var</span> <span class="nx">wmcs</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">WMCSEngine</span><span class="p">(</span><span class="nx">options</span><span class="p">);</span>
 </code></pre>
 
-<p>The JS SDK base class used to initialize the connection to the Multichannel System and perform voice and chat.</p>
+<p>The JS SDK base class is used to initialize the connection to Wavecell&rsquo;s Multichannel Communication System and provides methods to initiate voice calls and send messages.</p>
 
 <h3 id="options-parameters">Options Parameters</h3>
 
@@ -349,6 +358,38 @@ If the browser does not support Web RTC, the SDK will prompt you to download the
 <td>This event fires once <code class="prettyprint">status</code> method is called. The callback will receive a status object.</td>
 </tr>
 </tbody></table>
+
+          <h1 id="errors">Errors</h1>
+<pre><code class="highlight javascript"><span class="c1">// Error object received by the callback</span>
+<span class="p">{</span>
+    <span class="na">type</span> <span class="p">:</span> <span class="s1">'api.token_expired'</span><span class="p">,</span>
+    <span class="na">details</span> <span class="p">:</span> <span class="s1">'Your access token has expired.'</span>
+<span class="p">}</span>
+</code></pre>
+
+<p>The <code class="prettyprint">error</code> event callback will receive an error object so you act properly on it.</p>
+
+<table><thead>
+<tr>
+<th>Error Code</th>
+<th>Meaning</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>api.token_expired</td>
+<td>The access token provided has expired.</td>
+</tr>
+<tr>
+<td>api.bad_request</td>
+<td>The access token provided was invalid or the user_id was missing.</td>
+</tr>
+<tr>
+<td>api.request_error</td>
+<td>An error occurred in the WMCS backend.</td>
+</tr>
+</tbody></table>
+
+<p>If you receive error type <code class="prettyprint">api.token_expired</code>, you should set a new access token for the Engine using <code class="prettyprint">setAccessToken</code> <a href="#setaccesstoken">method</a>.</p>
 
       </div>
       <div class="dark-box">
