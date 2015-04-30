@@ -8,6 +8,7 @@ toc_footers:
 
 includes:
   - events
+  - errors
 
 search: true
 ---
@@ -22,11 +23,18 @@ v1.1.0
 
 Welcome to Wavecell Multichannel Communication System JavaScript SDK. The JavaScript Library will enable you to add voice, video and chat functionality to your webpages.
 
-## About the documentation
+## Installation
 
-All method description will have examples on the right side.
+> JavaScript URL
 
-Parameters passed to the methods are samples only. You are provided a detailed description of the parameters in each method block.
+```
+http://customer.api.wavecell.com/dist/<version>/engine.js
+```
+
+Add a script tag in your page with `src` pointing to the script url. Replace `<version>`
+with the current version of the library.
+
+You can check out the sample client application in [here](https://github.com/wavecellsg/voice-call-sample).
 
 # Authorization
 
@@ -46,6 +54,10 @@ Wavecell supports two OAUTH 2.0 flows:
 - Client credentials
 - Authorization Code
 
+You can find an example authentication server [here](https://github.com/wavecellsg/sample-authentication-server).
+
+<aside class="warning">You should never expose your client secret publicly.</aside>
+
 # WMCSEngine
 
 ```javascript
@@ -58,7 +70,7 @@ var options = {
 var wmcs = new WMCSEngine(options);
 ```
 
-The JS SDK base class used to initialize the connection to the Multichannel System and perform voice and chat.
+The JS SDK base class is used to initialize the connection to Wavecell's Multichannel Communication System and provides methods to initiate voice calls and send messages.
 
 ### Options Parameters
 
