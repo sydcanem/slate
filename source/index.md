@@ -1,168 +1,215 @@
 ---
-title: API Reference
+title: Wavecell System JS SDK Reference
 
 language_tabs:
-  - shell
-  - ruby
-  - python
 
 toc_footers:
-  - <a href='#'>Sign Up for a Developer Key</a>
-  - <a href='http://github.com/tripit/slate'>Documentation Powered by Slate</a>
+  - <a href='wavecell.com'>Copyright © 2015 Wavecell</a>
 
 includes:
-  - errors
+  - events
 
 search: true
 ---
 
 # Introduction
 
-Welcome to the Kittn API! You can use our API to access Kittn API endpoints, which can get information on various cats, kittens, and breeds in our database.
+> Current version
 
-We have language bindings in Shell, Ruby, and Python! You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.
-
-This example API documentation page was created with [Slate](http://github.com/tripit/slate). Feel free to edit it and use it as a base for your own API's documentation.
-
-# Authentication
-
-> To authorize, use this code:
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
+```
+v1.1.0
 ```
 
-```python
-import kittn
+Welcome to Wavecell Multichannel Communication System JavaScript SDK. The JavaScript Library will enable you to add voice, video and chat functionality to your webpages.
 
-api = kittn.authorize('meowmeowmeow')
+## About the documentation
+
+All method description will have examples on the right side.
+
+Parameters passed to the methods are samples only. You are provided a detailed description of the parameters in each method block.
+
+# Authorization
+
+> API Authorization Endpoint
+
+```
+http://api.wavecell.com/access/token
+```
+Wavecell JS SDK requires `access token` to authorize customer applications to the Multichannel Communication System.
+
+To start you must have a `client id` and `client secret`. Wavecell will provide you this credentials.
+
+Once you have your credentials, you can get an `access token` using OAUTH 2.0.
+
+Wavecell supports two OAUTH 2.0 flows:
+
+- Client credentials
+- Authorization Code
+
+# WMCSEngine
+
+```javascript
+var options = {
+  'access_token' : 'your_access_token',
+  'uid' : 'unique_user_id',
+  'name' : 'user_display_name'
+};
+
+var wmcs = new WMCSEngine(options);
 ```
 
-```shell
-# With shell, you can just pass the correct header with each request
-curl "api_endpoint_here"
-  -H "Authorization: meowmeowmeow"
-```
+The JS SDK base class used to initialize the connection to the Multichannel System and perform voice and chat.
 
-> Make sure to replace `meowmeowmeow` with your API key.
-
-Kittn uses API keys to allow access to the API. You can register a new Kittn API key at our [developer portal](http://example.com/developers).
-
-Kittn expects for the API key to be included in all API requests to the server in a header that looks like the following:
-
-`Authorization: meowmeowmeow`
-
-<aside class="notice">
-You must replace `meowmeowmeow` with your personal API key.
-</aside>
-
-# Kittens
-
-## Get All Kittens
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get()
-```
-
-```shell
-curl "http://example.com/api/kittens"
-  -H "Authorization: meowmeowmeow"
-```
-
-> The above command returns JSON structured like this:
-
-```json
-[
-  {
-    "id": 1,
-    "name": "Fluffums",
-    "breed": "calico",
-    "fluffiness": 6,
-    "cuteness": 7
-  },
-  {
-    "id": 2,
-    "name": "Isis",
-    "breed": "unknown",
-    "fluffiness": 5,
-    "cuteness": 10
-  }
-]
-```
-
-This endpoint retrieves all kittens.
-
-### HTTP Request
-
-`GET http://example.com/kittens`
-
-### Query Parameters
+### Options Parameters
 
 Parameter | Default | Description
 --------- | ------- | -----------
-include_cats | false | If set to true, the result will also include cats.
-available | true | If set to false, the result will include kittens that have already been adopted.
+access_token |  | Access token from the authentication server.
+uid |  | Unique identifier for this user
+name |  | Name to display on the call box.
+debugLevel | 0 | 0 - No debug messages, 1 - First level of debug messages, 3 - Detailed debug messages
 
-<aside class="success">
-Remember — a happy kitten is an authenticated kitten!
-</aside>
+## initialize
 
-## Get a Specific Kitten
+```javascript
+// Event emitted afer method `initialize` is executed
+wmcs.on('initialize', function (connectionType) {});
 
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get(2)
+wmcs.initialize();
 ```
 
-```python
-import kittn
+Launches the connection between JS SDK and the Multichannel Communication System.
 
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get(2)
+When connection has succeeded you should receive an `initialize` event.  
+The callback will receive the connection type string as the first parameter.  
+
+If the browser supports Web RTC, the connection type will be `"WebRTC"`.  
+If the browser does not support Web RTC, the SDK will prompt you to download the RtccDriver for your specific OS platform.
+
+Once the driver has started and connection is established, the connection type receive in the callback of `initialize` event will be `"RtccDriver"`.
+
+## call
+
+```javascript
+// Events emitted afer method `call` is executed
+wmcs.on('call.error', function (error) {});
+wmcs.on('call.active', function () {});
+
+wmcs.call('receiver_uid', 'Receiver');
 ```
+Create and initiates a 1-1 voice call.
 
-```shell
-curl "http://example.com/api/kittens/3"
-  -H "Authorization: meowmeowmeow"
-```
+Once call is active will emit `call.active` event. On error will emit `call.error` event with the `error` given as first parameter of the callback.
 
-> The above command returns JSON structured like this:
-
-```json
-{
-  "id": 2,
-  "name": "Isis",
-  "breed": "unknown",
-  "fluffiness": 5,
-  "cuteness": 10
-}
-```
-
-This endpoint retrieves a specific kitten.
-
-<aside class="warning">If you're not using an administrator API key, note that some kittens will return 403 Forbidden if they are hidden for admins only.</aside>
-
-### HTTP Request
-
-`GET http://example.com/kittens/<ID>`
-
-### URL Parameters
+### Parameters
 
 Parameter | Description
 --------- | -----------
-ID | The ID of the cat to retrieve
+uid | The unique id of the receiving user.
+             | - Min size = 6 characters
+             | - Max size = 90 characters
+             | - Valid characters = UTF8 - unicode - Latin basic, except: & " # \ % ?
+             | - Case sensitive and no whitespace characters
+name | The name displayed on the call box of when call is initiated.
+              | - Max size = 127 characters
+              | - Not null
+              | - UTF-8 Characters with exemption of characters " and '
 
+## hangup
+
+```javascript
+// Event emitted when method `hangup` was successful
+wmcs.on('call.hangup', function () {});
+
+wmcs.hangup();
+```
+
+Hangs-up the current call
+
+## disconnect
+
+```javascript
+// Event emitted when method `disconnect` is executed
+wmcs.on('disconnected', function () {});
+
+wmcs.disconnect();
+```
+
+Disconnects the user from the Multichannel Communication System.
+
+## status
+
+```javascript
+wmcs.on('user.status', function (status) {
+  
+});
+
+wmcs.status('receiver');
+
+// Status object
+{
+  uid : 'uid', // uid of the user
+  value : 0 // 0 - inactive, 1 - active
+}
+```
+
+Checks for the status of the uid passed in the system.
+
+Event `user.status` is emitted with the status of the user.
+
+The callback will receive the status object.
+
+## mute
+
+```javascript
+wmcs.mute();
+```
+
+Mutes your microphone. The other participant won't hear your audio stream.
+
+
+## unmute
+
+```javascript
+wmcs.unmute();
+```
+
+Unmutes your microphone. The other participant can hear your audio stream.
+
+## toggleMute
+
+```javascript
+wmcs.toggleMute();
+```
+
+Toggles mute state of the current call.
+
+## setAccessToken
+
+```javascript
+wmcs.setAccessToken('sample_token');
+````
+
+Sets a new access token for the current session
+
+### Parameters
+
+Parameter | Description
+--------- | -----------
+access_token | Access token received from WMCS server
+
+
+## setName
+
+```javascript
+wmcs.setName('receiver');
+```
+
+Sets the user's name displayed in the call box UI.
+
+Parameter | Description
+--------- | -----------
+name | Value of name must respect naming rules:
+     | - Max size = 127 characters
+     | - UTF-8 Characters with exemption of characters " and '
+     | - Case sensitive and no whitespace allowed
