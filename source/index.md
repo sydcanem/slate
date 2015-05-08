@@ -168,8 +168,14 @@ wmcs.status('receiver');
 Checks for the status of the uid passed in the system.
 
 Event `user.status` is emitted with the status of the user.
-
 The callback will receive the status object.
+
+Status object will have properties:
+
+Property | Description
+---------|------------
+uid   | Id of the user checked
+value | Value either 0 - inactive, 1 - active.
 
 ## mute
 
@@ -225,3 +231,158 @@ name | Value of name must respect naming rules:
      | - Max size = 127 characters
      | - UTF-8 Characters with exemption of characters " and '
      | - Case sensitive and no whitespace allowed
+
+## sendMessage
+
+```javascript
+wmcs.sendMessage(userId, message);
+
+wmcs.on('message', function (messageObj) {
+
+});
+```
+
+Sends a message to a user identified by userId in the method. The method accepts parameters:
+
+Parameter | Description
+---------|------------
+userId  | User id of recepient
+message | Message string
+
+Triggers a `message` event with the message object passed in the callback.
+Callback receives object with properties:
+
+Property | Description
+---------|------------
+uid        | User id of the sender
+message_id | Message id
+message    | Message sent
+
+## acknowledgeMessage
+
+```javascript
+wmcs.acknowledgeMessage(messageId, uid);
+
+wmcs.on('message.ack', function (ackObj) {
+
+});
+```
+
+Acknowledges a message via messageId and userId. The method accepts parameters:
+
+Parameter | Description
+---------|------------
+messageId  | Message id integer between 0 - 4294967296
+uid        | User id of the sender
+
+
+Triggers a `message.ack` event when a message is successfully acknowledged.
+Callback receives object with properties:
+
+Property | Description
+---------|------------
+uid        | User id of the sender
+message_id | Message id
+
+## setPresence
+
+```javascript
+wmcs.setPresence(presenceInteger);
+
+wmcs.on('presence.update', function (presenceObjArray) {
+  presenceObjArray.forEach(function (p) {
+    console.log(p[i].uid +" 's status is:" + p[i].presence);
+  });
+});
+```
+
+Sets the presence status of the current user. Parameter passed to `setPresence` must be an integer value between 0 and 255. The application is responsible for determining the meaning of these values except for 0 which means offline.
+
+Triggers a `presence.update` event passing an array of presence object to the callback.
+Each presence object have properties:
+
+Property | Description
+---------|------------
+uid        | User id of the user which presence was changed/updated.
+presence   | Presence integer value
+
+## getPresence
+
+```javascript
+// Sample call check user_1 and user_2 presence
+wmcs.getPresence(['user_1', 'user_2']);
+
+wmcs.on('presence.status', function (presenceObjArray) {
+  presenceObjArray.forEach(function (p) {
+    console.log(p[i].uid +" 's status is:" + p[i].presence);
+  });
+});
+```
+
+Gets the presence of users not in current user roster. This method accepts an array of user ids.
+
+Triggers `presence.status` event passing an array of presence object to the callback. Each presence object have properties:
+
+Property | Description
+---------|------------
+uid        | User id of the user which presence was changed/updated.
+presence   | Presence integer value
+
+## addToRoster
+
+```javascript
+// Adding one user to the roster
+wmcs.addToRoster(['user_1']);
+
+wmcs.on('presence.roster.updated', function (data) {
+
+});
+```
+
+Adds a user to your current presence roster. Initial user presence value is set to 0.
+
+Triggers `presence.roster.updated` event passing an object containing the number of user added and the total count of users currently in the roster.
+
+## removeFromRoster
+
+```javascript
+// Removing one user from the roster
+wmcs.removeFromRoster(['user_1']);
+
+wmcs.on('presence.roster.updated', function (data) {
+
+});
+```
+
+Removes a user from the current roster.
+
+Triggers `presence.roster.updated` event passing an object containing the number of user removed and the total count of users currently in the roster.
+
+## getRoster
+
+```javascript
+wmcs.getRoster();
+
+wmcs.on('presence.roster', function (presenceObjArray) {
+  presenceObjArray.forEach(function (p) {
+    console.log(p[i].uid +" 's status is:" + p[i].presence);
+  });
+})
+```
+
+Gets a presence values of all users currently in the roster.
+
+Triggers `presence.status` event passing an array of presence object to the callback. Each presence object have properties:
+
+Property | Description
+---------|------------
+uid        | User id of the user which presence was changed/updated.
+presence   | Presence integer value
+
+## clearRoster
+
+```javascript
+wmcs.clearRoster();
+```
+
+Empties the current user's roster.

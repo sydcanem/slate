@@ -2,8 +2,9 @@
 	padding : 5px;
 }
 
-.content code {
+.index .content code {
 	font-family : 'Source Code Pro', Monaco, Menlo, Consolas, "Courier New", monospace;
+	background  : #E8E6E4;
 }
 
 .index .page-wrapper {
