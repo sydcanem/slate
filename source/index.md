@@ -9,6 +9,7 @@ toc_footers:
 includes:
   - events
   - errors
+  - archives
 
 search: true
 ---
